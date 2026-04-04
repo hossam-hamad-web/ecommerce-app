@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.row {
+  @apply flex flex-wrap px-4 py-8 items-center;
+}
+
+.btn {
+  @apply px-4 py-2 w-full rounded-lg text-white bg-green-600;
+}
+
+.category-img {
+  height: 200px;
+}
+
+.product .btn {
+  cursor: pointer;
+  transition:
+    transform 1s,
+    opacity 1s;
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.product:hover .btn {
+  opacity: 1;
+  transform: translateY(0%);
+}
+
+.nav-link {
+  @apply text-lg text-slate-900 font-light hover:text-green-700 transition mb-10;
+}
