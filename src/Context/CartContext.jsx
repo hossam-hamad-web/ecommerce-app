@@ -72,7 +72,6 @@ export default function CartContextProvider({ children }) {
         updateCartItemCount,
         deleteProudctItem,
         clearCartItems,
-        setcartDetails,
       }}
     >
       {children}
