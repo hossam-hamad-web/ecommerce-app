@@ -4,7 +4,7 @@ import axios from "axios";
 import Style from "./CategoriesSlider.module.css";
 
 export default function CategoriesSlider() {
-  const [categories, setCategories] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const settings = {
@@ -12,9 +12,25 @@ export default function CategoriesSlider() {
     infinite: true,
     speed: 500,
     slidesToShow: 8,
-    slidesToScroll: 1,
+    slidesToScroll: 2,
     autoplay: true,
-    autoplaySpeed: 1000,
+    autoplaySpeed: 2000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   async function fetchCategories() {
@@ -25,7 +41,7 @@ export default function CategoriesSlider() {
       );
       setCategories(data.data);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching categories:", err);
     } finally {
       setLoading(false);
     }
@@ -44,25 +60,32 @@ export default function CategoriesSlider() {
   }
 
   return (
-    <>
-      <div className="py-5">
-        <h2 className="py-4 text-xl text-gray-800 font-light">
+    <div className="py-8">
+      <div className="pb-4">
+        <h2 className="text-xl text-gray-800 font-light">
           Shop Popular Categories
         </h2>
       </div>
 
-      <Slider {...settings}>
-        {categories?.map((category) => (
-          <div key={category._id} className="mt-10">
-            <img
-              className="category-img w-full"
-              src={category.image}
-              alt={category?.name}
-            />
-            <h3 className="text-center font-light">{category.name}</h3>
-          </div>
-        ))}
-      </Slider>
-    </>
+      {categories && categories.length > 0 ? (
+        <Slider {...settings}>
+          {categories.map((category) => (
+            <div key={category._id} className="px-2 focus:outline-none">
+              <img
+                className="w-full object-cover rounded-lg"
+                style={{ height: "200px" }}
+                src={category.image}
+                alt={category?.name}
+              />
+              <h3 className="text-center font-light text-sm mt-2 text-gray-700">
+                {category.name}
+              </h3>
+            </div>
+          ))}
+        </Slider>
+      ) : (
+        <div className="text-center text-gray-400">No categories available</div>
+      )}
+    </div>
   );
 }

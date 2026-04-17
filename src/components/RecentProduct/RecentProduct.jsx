@@ -75,7 +75,7 @@ export default function RecentProduct() {
 
   return (
     <div className="row flex flex-wrap -mx-4">
-      {data.map((product) => (
+      {data?.map((product) => (
         <div key={product?.id} className="sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-6">
           <div className="product py-4 p-4 rounded-xl shadow-md">
             <Link to={`/productdetails/${product?.id}`}>
