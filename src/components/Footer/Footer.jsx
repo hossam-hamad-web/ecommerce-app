@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className={`bg-[#FAFAFA] my-4 px-4 py-8 ${style.footer}`}>
+    <footer className={`bg-[#FAFAFA] mt-4 px-4 py-8 ${style.footer}`}>
       {/* Top section */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mx-auto w-full md:w-4/5 border-b border-gray-300 pb-4">
         <div className="group flex flex-col items-center font-semibold">
@@ -138,7 +138,7 @@ export default function Footer() {
         <p
           className={`${style.ecommerce} font-medium text-center md:text-left`}
         >
-          © 2025 - Ecommerce Shoplet
+          © {new Date().getFullYear()} - Ecommerce Shoplet
         </p>
         <div className="flex flex-row items-center gap-2">
           {[pay1, pay2, pay3, pay4, pay5].map((img, idx) => (
