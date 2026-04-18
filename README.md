@@ -63,7 +63,7 @@ npm run dev
 
 ## 🌐 Live Demo
 
-> Soon
+> (https://ecommerce-app-three-lac.vercel.app/)
 
 ---
 
