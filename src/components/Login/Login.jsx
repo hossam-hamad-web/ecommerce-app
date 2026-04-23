@@ -1,145 +1,171 @@
 import { useContext, useState } from "react";
-import Style from "./Login.module.css";
 import { useFormik } from "formik";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { UserContext } from "../../Context/UserContext";
+import { motion } from "framer-motion"; // استيراد مكتبة الأنيميشن
 
 export default function Login() {
-  let { userLogin, setuserLogin } = useContext(UserContext);
-  let navigate = useNavigate(); // programmatic navigate
+  let { setuserLogin } = useContext(UserContext);
+  let navigate = useNavigate();
   const [apiError, setapiError] = useState("");
   const [isLoading, setisLoading] = useState(false);
+
   function handleLogin(formValues) {
     setisLoading(true);
     axios
       .post(`https://ecommerce.routemisr.com/api/v1/auth/signin`, formValues)
       .then((apiResponse) => {
-        if (apiResponse.data.message == "success") {
+        if (apiResponse.data.message === "success") {
           localStorage.setItem("userToken", apiResponse.data.token);
-          //
           setuserLogin(apiResponse.data.token);
-          navigate("/"); // too go to index (Home)
+          navigate("/");
         }
         setisLoading(false);
-        setapiError(apiResponse?.response?.data.message);
-      }) // seccessفي حالة ال respone بيتبعتلها اللي
-      .catch((apiResponse) => {
-        setapiError(apiResponse?.response?.data?.message);
+      })
+      .catch((err) => {
+        setapiError(
+          err?.response?.data?.message || "Invalid email or password",
+        );
         setisLoading(false);
-      }); // reject حالة ال respone بيتبعتلها اللي
+      });
   }
-  /* this object that will be send to back-end
-     and those inforamation is required in 
-     database not from your brain */
-  /*let us to make validation using Yup */
+
   let YupValidation = Yup.object().shape({
     email: Yup.string().required("Email is required").email("Invalid Email"),
-    password: Yup.string()
-      .required("Passowrd is required")
-      .min(6, "Password must be at least 6 character")
-      .matches(/^[A-Z][a-z0-9]{5,10}/, "password must start with uppercase "),
+    password: Yup.string().required("Password is required"),
   });
 
   let formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
+    initialValues: { email: "", password: "" },
     validationSchema: YupValidation,
     onSubmit: handleLogin,
   });
-  // اللي هيبعت للداتا بيز objectيعني من الاخر ده
 
   return (
-    <>
-      <div className="py-6 max-w-xl mx-auto">
-        {apiError ? (
-          <div
-            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
+    <div className="min-h-screen relative flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[#f8fafc] overflow-hidden">
+      {/* عناصر متحركة في الخلفية لتصميم عصري */}
+      <motion.div
+        animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
+        transition={{ duration: 20, repeat: Infinity }}
+        className="absolute -top-24 -left-24 w-96 h-96 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"
+      />
+      <motion.div
+        animate={{ scale: [1, 1.5, 1], rotate: [0, -90, 0] }}
+        transition={{ duration: 15, repeat: Infinity }}
+        className="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+      >
+        <div className="flex justify-center">
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.7 }}
+            className="bg-green-600 p-4 rounded-3xl shadow-2xl shadow-green-200"
           >
-            {apiError}
-          </div>
-        ) : null}
+            <i className="fas fa-shopping-bag text-white text-3xl"></i>
+          </motion.div>
+        </div>
+        <h2 className="mt-6 text-center text-4xl font-extrabold text-gray-900 tracking-tight">
+          Welcome Back
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-500">
+          The best deals are waiting for you.
+        </p>
+      </motion.div>
 
-        <h2 className="text-3xl text-green-600 font-bold mb-6">Login Now</h2>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="relative z-0 w-full mb-5 group">
-            <input
-              type="email"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.email}
-              name="email"
-              id="email"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="email"
-              className=" peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-green-600 peer-focus:dark:text-green-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4"
+      >
+        <div className="bg-white/80 backdrop-blur-xl py-10 px-6 shadow-[0_20px_50px_rgba(0,0,0,0.05)] sm:rounded-[2.5rem] sm:px-12 border border-white">
+          {apiError && (
+            <motion.div
+              initial={{ x: -20 }}
+              animate={{ x: 0 }}
+              className="mb-6 bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-xl text-sm flex items-center gap-3"
             >
-              Enter Email
-            </label>
-          </div>
+              <i className="fas fa-exclamation-triangle"></i>
+              {apiError}
+            </motion.div>
+          )}
 
-          {formik.errors.email && formik.touched.email ? (
-            <div
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-              role="alert"
-            >
-              {formik.errors.email}
+          <form className="space-y-5" onSubmit={formik.handleSubmit}>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+                placeholder="example@mail.com"
+                className="w-full px-5 py-4 rounded-2xl bg-white border border-gray-100 focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all outline-none shadow-sm"
+              />
+              {formik.errors.email && formik.touched.email && (
+                <p className="mt-2 text-xs text-red-500 font-medium ml-2">
+                  {formik.errors.email}
+                </p>
+              )}
             </div>
-          ) : null}
 
-          <div className="relative z-0 w-full mb-5 group">
-            <input
-              type="password"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.password}
-              name="password"
-              id="password"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="password"
-              className=" peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-green-600 peer-focus:dark:text-green-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Enter password
-            </label>
-          </div>
-
-          {formik.errors.password && formik.touched.password ? (
-            <div
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-              role="alert"
-            >
-              {formik.errors.password}
+            <div>
+              <div className="flex justify-between items-center mb-2 ml-1">
+                <label className="block text-sm font-bold text-gray-700">
+                  Password
+                </label>
+              </div>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+                placeholder="••••••••"
+                className="w-full px-5 py-4 rounded-2xl bg-white border border-gray-100 focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all outline-none shadow-sm"
+              />
             </div>
-          ) : null}
 
-          <button
-            type="submit"
-            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-          >
-            {isLoading ? (
-              <i className="fas fa-spinner fa-spin text-white"></i>
-            ) : (
-              "Login"
-            )}
-          </button>
-          <p>
-            If you didn`t have an account ?{" "}
-            <span className="py-1 font-bold text-pink-800">
-              <Link to={"/register"}>Register Now</Link>{" "}
-            </span>
-          </p>
-        </form>
-      </div>
-    </>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center py-4 px-4 border border-transparent rounded-2xl shadow-xl shadow-green-200 text-lg font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none transition-all disabled:opacity-50"
+            >
+              {isLoading ? (
+                <i className="fas fa-spinner fa-spin"></i>
+              ) : (
+                "Sign In"
+              )}
+            </motion.button>
+          </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-gray-500 font-medium">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="text-green-600 font-extrabold hover:underline underline-offset-4 transition-all"
+              >
+                Sign Up Free
+              </Link>
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 }
